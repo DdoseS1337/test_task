@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { LoggerModule } from './logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
+import { GoogleSheetModule } from './google/google-sheet/google-sheet.module';
+import { GoogleApiModule } from './google/google-api/google-api.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -17,7 +19,7 @@ import * as Joi from 'joi';
       DATABASE_USER: Joi.string().required(),
       DATABASE_NAME: Joi.string().required(),
     }),
-  })],
+  }), GoogleSheetModule, GoogleApiModule],
   controllers: [AppController],
   providers: [AppService],
 })
