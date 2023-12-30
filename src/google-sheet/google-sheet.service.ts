@@ -57,7 +57,7 @@ export class GoogleSheetService {
             const sizesDataWithoutFirstElement = sizesData.map(row => row.slice(1));
 
             productsNames.forEach((productName, index) => {
-                const availableSizes: string[] = [];
+                const availableSizes: SizeDTO[] = [];
                 sizesDataWithoutFirstElement.forEach((size, sizeIndex) => {
                     if (size[index] === '+') {
                         availableSizes.push(sizesData[sizeIndex][0])
@@ -67,7 +67,7 @@ export class GoogleSheetService {
                     name: productName.trim(),
                     price: productPrices[index],
                     code: productCodes[index],
-                    sizes: availableSizes ,
+                    sizes: availableSizes,
                     productModel: { modelName: sheetName }
                 });
             });

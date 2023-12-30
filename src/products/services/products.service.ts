@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ProductModelRepository, ProductRepository, SizeRepository } from '../repositories';
 import { ProductDTO } from '../dto/product.dto';
 import { Product, ProductModel, Size } from '../entities';
+import { UpdateProductDTO } from '../dto/update-product.dto';
+import { QueryValidator } from '../dto/query.dto';
 
 @Injectable()
 export class ProductsService {
@@ -12,12 +14,13 @@ export class ProductsService {
     async create(data: ProductDTO[]) {
         try {
             for (const productData of data) {
-                // 1. Створіть або знайдіть ProductModel
+                // 1. Створення або знаходження ProductModel
                 const productmodelEntity = new ProductModel({ modelName: productData.productModel.modelName, })
                 const productModel = await this.productModelRepository.findOneOrCreate({ modelName: productData.productModel.modelName }, productmodelEntity);
                 const sizes = [];
-                // 2. Створіть або знайдіть розмір для кожного розміру, що міститься в ProductDTO
-                for (const sizeValue of productData.sizes) {
+                // 2. Створення розмера або знаходження його
+                for (const sizeV of productData.sizes) {
+                    let sizeValue = sizeV as unknown as string
                     const sizeEntity = new Size({ sizeValue })
                     const size = await this.sizeRepository.findOneOrCreate({ sizeValue }, sizeEntity);
                     sizes.push(size);
@@ -37,7 +40,7 @@ export class ProductsService {
                     }
                 } catch (error) {
                     console.log(error)
-                    // Створіть новий об'єкт продукту з використанням ProductModel та розмірів
+                    // Створення нового об'єкт продукту з використанням ProductModel та розмірів
                     const product = new Product({
                         ...productData,
                         sizes: sizes,
@@ -62,10 +65,20 @@ export class ProductsService {
         return this.productRepository.findOne({ id });
     }
 
-    async update(id: number, updateReservationDto: any) {
+    async findProductsByModelAndSize(query: QueryValidator) {
+        const { model, size } = query;
+        console.log(model);
+        console.log(size);
+        if (model || size) {
+            return this.productRepository.findProductsByModelAndSize(model, size);
+        }
+        return this.findAll();
+    }
+
+    async update(id: number, updateProductDTO: UpdateProductDTO) {
         return this.productRepository.findOneAndUpdate(
             { id },
-            updateReservationDto,
+            updateProductDTO,
         );
     }
 

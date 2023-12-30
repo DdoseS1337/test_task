@@ -15,4 +15,25 @@ export class ProductRepository extends AbstractRepository<Product> {
     ) {
         super(productRepository, entityManager);
     }
+    async findProductsByModelAndSize(modelName?: string, sizeValue?: string): Promise<Product[]> {
+        let queryBuilder = this.createQueryBuilder('product');
+
+        if (modelName && sizeValue) {
+            queryBuilder = queryBuilder
+                .innerJoin('product.sizes', 'size')
+                .innerJoin('product.productModel', 'model')
+                .where('model.modelName = :modelName', { modelName })
+                .andWhere('size.sizeValue = :sizeValue', { sizeValue });
+        } else if (modelName) {
+            queryBuilder = queryBuilder
+                .innerJoin('product.productModel', 'model')
+                .where('model.modelName = :modelName', { modelName });
+        } else if (sizeValue) {
+            queryBuilder = queryBuilder
+                .innerJoin('product.sizes', 'size')
+                .where('size.sizeValue = :sizeValue', { sizeValue });
+        }
+
+        return queryBuilder.getMany();
+    }
 }

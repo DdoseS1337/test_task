@@ -5,10 +5,13 @@ import { SizeRepository } from '../repositories';
 export class SizesService {
     constructor(private readonly sizeRepository: SizeRepository) { }
 
-    async create(product: any) {
-    }
- 
+    
+
     async findAll() {
         return this.sizeRepository.find({});
+    }
+
+    async remove(id: number) {
+        return this.sizeRepository.findOneAndDelete({ id });
     }
 }

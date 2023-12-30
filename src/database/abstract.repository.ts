@@ -20,6 +20,10 @@ export abstract class AbstractRepository<T extends AbstractEntity<T>> {
         return this.entityManager.save(entity);
     }
 
+    createQueryBuilder(alias?: string) {
+        return this.itemsRepository.createQueryBuilder(alias);
+    }
+
     async findOne(
         where: FindOptionsWhere<T>,
         relations?: FindOptionsRelations<T>,
@@ -59,8 +63,8 @@ export abstract class AbstractRepository<T extends AbstractEntity<T>> {
 
         if (!entity) {
             entity = await this.entityManager.save(createData);
+            return entity;
         }
-
         return entity;
     }
     async find(where: FindOptionsWhere<T>) {
