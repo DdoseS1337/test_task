@@ -3,10 +3,11 @@ import { GoogleSheetService } from './google-sheet.service';
 import { GoogleSheetController } from './google-sheet.controller';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { ProductsModule } from '../products/products.module';
 
 
 @Module({
-  imports: [ConfigModule.forRoot({
+  imports: [ProductsModule, ConfigModule.forRoot({
     isGlobal: true,
     validationSchema: Joi.object({
       SPREAD_SHEET_ID: Joi.string().required(),

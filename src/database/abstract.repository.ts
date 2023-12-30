@@ -51,6 +51,18 @@ export abstract class AbstractRepository<T extends AbstractEntity<T>> {
         return this.findOne(where);
     }
 
+    async findOneOrCreate(
+        where: FindOptionsWhere<T>,
+        createData: T,
+    ): Promise<T> {
+        let entity = await this.itemsRepository.findOne({ where });
+
+        if (!entity) {
+            entity = await this.entityManager.save(createData);
+        }
+
+        return entity;
+    }
     async find(where: FindOptionsWhere<T>) {
         return this.itemsRepository.findBy(where);
     }

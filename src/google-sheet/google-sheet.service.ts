@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
 import { ConfigService } from '@nestjs/config';
+import { ProductModelsService, ProductsService, SizesService } from '../products/services';
+import { ProductDTO } from 'src/products/dto/product.dto';
+import { SizeDTO } from 'src/products/dto/size.dto';
 
 @Injectable()
 export class GoogleSheetService {
     private readonly sheets: any;
 
-    constructor(private readonly configService: ConfigService) {
+    constructor(
+        private readonly configService: ConfigService,
+        private readonly productsService: ProductsService
+    ) {
         this.sheets = google.sheets({ version: 'v4', auth: this.configService.get('GOOGLE_API_KEY') });
     }
 
@@ -19,11 +25,8 @@ export class GoogleSheetService {
             const sheetsList = response.data.sheets;
             if (sheetsList) {
                 const sheetTitles = sheetsList.map((sheet: any) => sheet.properties?.title);
-                console.log('List of sheets:', sheetTitles);
-
-                const dataPromises = sheetTitles.map((sheetTitle: any) => this.getDataFromGoogleSheet(sheetTitle));
+                const dataPromises = sheetTitles.map((sheetTitle: string) => this.getDataFromGoogleSheet(sheetTitle));
                 const allSheetData = await Promise.all(dataPromises);
-                console.log('Data from all sheets:', allSheetData);
                 return allSheetData;
             } else {
                 console.log('No sheets found in the spreadsheet.');
@@ -35,21 +38,42 @@ export class GoogleSheetService {
         }
     }
 
-    async getDataFromGoogleSheet(sheetName: any) {
+    async getDataFromGoogleSheet(sheetName: string) {
         try {
             const response = await this.sheets.spreadsheets.values.get({
                 spreadsheetId: this.configService.get('SPREAD_SHEET_ID'),
                 range: `${sheetName}!A1:Q`,
             });
-
             const values = response.data.values;
-            if (values) {
-                console.log(`Data from sheet '${sheetName}':`, values);
-                return { [sheetName]: values };
-            } else {
-                console.log(`No data found in sheet '${sheetName}'.`);
-                return { [sheetName]: [] };
-            }
+
+            const [header1, header2, header3, names, prices, codes] = values;
+            const productsNames = names.slice(1); // Отримати назви товарів, ігноруючи перший елемент
+            const productPrices = prices.slice(1); // Отримати ціни товарів, ігноруючи перший елемент
+            const productCodes = codes.slice(1); // Отримати коди товарів, ігноруючи перший елемент
+
+            const sizesIndex = values.findIndex(row => row.includes('Розміри'));
+            const sizesData = values.slice(sizesIndex + 1);
+            const products: ProductDTO[] = [];
+            const sizesDataWithoutFirstElement = sizesData.map(row => row.slice(1));
+
+            productsNames.forEach((productName, index) => {
+                const availableSizes: string[] = [];
+                sizesDataWithoutFirstElement.forEach((size, sizeIndex) => {
+                    if (size[index] === '+') {
+                        availableSizes.push(sizesData[sizeIndex][0])
+                    }
+                });
+                products.push({
+                    name: productName.trim(),
+                    price: productPrices[index],
+                    code: productCodes[index],
+                    sizes: availableSizes ,
+                    productModel: { modelName: sheetName }
+                });
+            });
+            
+            await this.productsService.create(products)
+            return { [sheetName]: values };
         } catch (error) {
             console.error(`Error fetching data from sheet '${sheetName}':`, error);
             throw new Error(`Error fetching data from sheet '${sheetName}'`);
