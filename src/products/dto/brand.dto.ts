@@ -1,10 +1,10 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class ProductModelDTO {    
+export class CreateBrandDTO {
     @IsString()
-    modelName: string;
+    brandName: string;
 
     @IsOptional()
     @IsString()
-    brandName: string
+    subCategoryName: string;
 }

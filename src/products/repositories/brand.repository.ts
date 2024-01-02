@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AbstractRepository } from '../../database/abstract.repository';
-import { Product } from '../entities';
+import { Brand } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
 @Injectable()
-export class ProductRepository extends AbstractRepository<Product> {
-    protected readonly logger = new Logger(ProductRepository.name);
+export class BrandsRepository extends AbstractRepository<Brand> {
+    protected readonly logger = new Logger(BrandsRepository.name);
 
     constructor(
-        @InjectRepository(Product)
-        productRepository: Repository<Product>,
+        @InjectRepository(Brand)
+        brandRepository: Repository<Brand>,
         entityManager: EntityManager,
     ) {
-        super(productRepository, entityManager);
+        super(brandRepository, entityManager);
     }
 }
