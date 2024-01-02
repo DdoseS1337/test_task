@@ -8,11 +8,6 @@ export class ProductsController {
 
     constructor(private readonly productsService: ProductsService) { }
 
-    // @Get()
-    // async getAllProduct() {
-    //     return this.productsService.findAll();
-    // }
-
     @Get(':id')
     async findOne(@Param('id') id: string) {
       return this.productsService.findOne(+id);
@@ -21,7 +16,7 @@ export class ProductsController {
     @Get()
     async getAllProduct(@Query() query: QueryValidator) {
       let options = {...query}
-      return this.productsService.findProductsByModelAndSize(options);
+      return this.productsService.findProductsByQueryParams(options);
     }
 
     @Patch(':id')
@@ -31,9 +26,5 @@ export class ProductsController {
     ) {
       return this.productsService.update(+id, updateProductDTO);
     }
-  
-    @Delete(':id')
-    async remove(@Param('id') id: string) {
-      return this.productsService.remove(+id);
-    }
+
 }

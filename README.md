@@ -45,18 +45,19 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Modules
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
+# GoogleSheetModule
+This module is responsible for fetching data from a Google Sheet periodically and processing it to update products.
+
+# ProductsModule
+The product module manages the logic and functionality related to handling, storing, updating, and displaying product information.
+ 
+# DatabaseModule
+The database module handles database connections, defines data structures, and configures operations for smooth communication between the app and the database.
+```
+
 
 ## Support
 

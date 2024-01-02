@@ -1,5 +1,6 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { SizesService } from '../services';
+import { SizeDTO } from '../dto/size.dto';
 
 @Controller('sizes')
 export class SizesController {
@@ -7,12 +8,31 @@ export class SizesController {
     constructor(private readonly sizesService: SizesService) { }
 
     @Get()
-    async getAllProduct() {
+    async getAllProductModel() {
+        return this.sizesService.findAll();
+    }
+    @Post()
+    async create(
+        @Body() sizeDto: SizeDTO,
+    ) {
+        return this.sizesService.create(sizeDto);
+    }
+
+    @Get()
+    async findAll() {
         return this.sizesService.findAll();
     }
 
-    @Delete(':id')
-    async remove(@Param('id') id: string) {
-      return this.sizesService.remove(+id);
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        return this.sizesService.findOne(+id);
+    }
+
+    @Patch(':id')
+    async update(
+        @Param('id') id: string,
+        @Body() updateReservationDto: any,
+    ) {
+        return this.sizesService.update(+id, updateReservationDto);
     }
 }

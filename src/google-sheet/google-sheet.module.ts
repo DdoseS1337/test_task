@@ -5,16 +5,18 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ProductsModule } from '../products/products.module';
 
-
 @Module({
-  imports: [ProductsModule, ConfigModule.forRoot({
-    isGlobal: true,
-    validationSchema: Joi.object({
-      SPREAD_SHEET_ID: Joi.string().required(),
-      GOOGLE_API_KEY: Joi.string().required(),
-    })
-  })],
+  imports: [
+    ProductsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        SPREAD_SHEET_ID: Joi.string().required(),
+        GOOGLE_API_KEY: Joi.string().required(),
+      }),
+    }),
+  ],
   providers: [GoogleSheetService],
   controllers: [GoogleSheetController]
 })
-export class GoogleSheetModule { }
+export class GoogleSheetModule {}
