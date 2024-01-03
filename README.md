@@ -58,6 +58,31 @@ The product module manages the logic and functionality related to handling, stor
 The database module handles database connections, defines data structures, and configures operations for smooth communication between the app and the database.
 ```
 
+## Requests
+```bash
+# get,create, update brands
+http://localhost:3000/brands
+
+# get, create, update categories
+http://localhost:3000/categories
+
+# get,create, update models
+http://localhost:3000/models
+
+# get,update products
+http://localhost:3000/products
+
+# get, create, update sizes
+http://localhost:3000/sizes
+
+# get, create, update subcategories
+http://localhost:3000/subcategories
+
+# update list of product handly
+http://localhost:3000/google
+
+
+```
 
 ## Support
 
