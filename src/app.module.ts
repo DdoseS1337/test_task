@@ -9,6 +9,7 @@ import * as Joi from 'joi';
 
 @Module({
   imports: [DatabaseModule, LoggerModule, ConfigModule.forRoot({
+    
     isGlobal: true,
     validationSchema: Joi.object({
       PORT: Joi.number().required(),
